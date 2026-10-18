@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#173d31" />
+    <meta name="description" content="昆虫検定の初級102問を、写真つき解説で学べる問題演習アプリです。" />
+    <meta property="og:title" content="昆虫検定トレーナー" />
+    <meta property="og:description" content="初級102問を、写真つき解説で実力チェック。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="昆虫検定トレーナー" />
+    <meta name="twitter:description" content="初級102問を、写真つき解説で実力チェック。" />
+    <meta name="twitter:image" content="assets/og.png" />
+    <title>昆虫検定トレーナー</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="data.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <button class="brand" id="brandButton" type="button" aria-label="ホームへ戻る">
+        <span class="brand-mark" aria-hidden="true">昆</span>
+        <span>
+          <strong>昆虫検定トレーナー</strong>
+          <small>Insect Knowledge Practice</small>
+        </span>
+      </button>
+      <button class="quiet-button" id="resetButton" type="button">学習記録</button>
+    </header>
+
+    <main>
+      <section class="screen home-screen active" id="homeScreen" aria-labelledby="homeTitle">
+        <div class="intro">
+          <p class="eyebrow">昆虫検定 公式ガイドブック対応</p>
+          <h1 id="homeTitle">まずは初級から、<br />くり返し身につける。</h1>
+          <p class="intro-copy">問題を解いたあと、写真・イラストつきの解説でその場で確認できます。</p>
+        </div>
+
+        <div class="home-grid">
+          <section class="panel level-panel" aria-labelledby="levelTitle">
+            <div class="section-heading">
+              <span class="step">1</span>
+              <div>
+                <p class="overline">LEVEL</p>
+                <h2 id="levelTitle">級を選ぶ</h2>
+              </div>
+            </div>
+            <div class="level-list">
+              <button class="level-card selected" type="button" aria-pressed="true">
+                <span class="level-badge">初級</span>
+                <span><strong>全102問</strong><small>昆虫の基本から身近な知識まで</small></span>
+                <span class="check" aria-hidden="true">✓</span>
+              </button>
+              <button class="level-card disabled" type="button" disabled>
+                <span class="level-badge">中級</span>
+                <span><strong>準備中</strong><small>素材追加後に同じ画面で選択できます</small></span>
+              </button>
+            </div>
+          </section>
+
+          <section class="panel setup-panel" aria-labelledby="setupTitle">
+            <div class="section-heading">
+              <span class="step">2</span>
+              <div>
+                <p class="overline">PRACTICE</p>
+                <h2 id="setupTitle">出題方法</h2>
+              </div>
+            </div>
+
+            <fieldset>
+              <legend>問題数</legend>
+              <div class="segmented" id="countOptions">
+                <label><input type="radio" name="count" value="10" checked /><span>10問</span></label>
+                <label><input type="radio" name="count" value="20" /><span>20問</span></label>
+                <label><input type="radio" name="count" value="all" /><span>全102問</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>順番</legend>
+              <div class="segmented two" id="orderOptions">
+                <label><input type="radio" name="order" value="random" checked /><span>ランダム</span></label>
+                <label><input type="radio" name="order" value="sequential" /><span>番号順</span></label>
+              </div>
+            </fieldset>
+
+            <button class="primary-button" id="startButton" type="button">初級をスタート</button>
+            <button class="secondary-button" id="reviewButton" type="button" disabled>
+              間違えた問題を復習 <span id="reviewCount">0問</span>
+            </button>
+          </section>
+        </div>
+
+        <section class="stats" aria-label="学習記録">
+          <div><span id="attemptStat">0</span><small>回答数</small></div>
+          <div><span id="accuracyStat">—</span><small>正答率</small></div>
+          <div><span id="masteredStat">0</span><small>正解した問題</small></div>
+        </section>
+      </section>
+
+      <section class="screen quiz-screen" id="quizScreen" aria-live="polite">
+        <div class="quiz-header">
+          <button class="back-button" id="quitButton" type="button">← 終了</button>
+          <div class="quiz-meta">
+            <span id="progressText">1 / 10</span>
+            <span id="scoreText">正解 0</span>
+          </div>
+        </div>
+        <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+
+        <article class="question-shell">
+          <div class="question-label"><span id="questionNumber">第1問</span><small>画像を見て番号を選んでください</small></div>
+          <img class="question-image" id="questionImage" alt="" />
+          <div class="choice-grid" id="choiceGrid" aria-label="解答を選ぶ">
+            <button type="button" data-choice="1"><kbd>1</kbd><span>1を選ぶ</span></button>
+            <button type="button" data-choice="2"><kbd>2</kbd><span>2を選ぶ</span></button>
+            <button type="button" data-choice="3"><kbd>3</kbd><span>3を選ぶ</span></button>
+            <button type="button" data-choice="4"><kbd>4</kbd><span>4を選ぶ</span></button>
+          </div>
+        </article>
+
+        <section class="answer-panel" id="answerPanel" hidden>
+          <div class="answer-result" id="answerResult"></div>
+          <p class="answer-kicker">写真・イラストつき解説</p>
+          <img class="answer-image" id="answerImage" alt="" />
+          <button class="primary-button next-button" id="nextButton" type="button">次の問題へ</button>
+        </section>
+      </section>
+
+      <section class="screen result-screen" id="resultScreen" aria-labelledby="resultTitle">
+        <p class="eyebrow">SESSION COMPLETE</p>
+        <h1 id="resultTitle">おつかれさまでした</h1>
+        <div class="result-score"><strong id="resultScore">0 / 10</strong><span id="resultPercent">0%</span></div>
+        <p id="resultMessage"></p>
+        <div class="result-actions">
+          <button class="primary-button" id="retryButton" type="button">同じ設定でもう一度</button>
+          <button class="secondary-button" id="homeButton" type="button">ホームへ戻る</button>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="statsDialog">
+      <div class="dialog-heading">
+        <div><p class="overline">RECORD</p><h2>学習記録</h2></div>
+        <button id="closeDialog" type="button" aria-label="閉じる">×</button>
+      </div>
+      <div class="dialog-stats">
+        <div><span id="dialogAttempts">0</span><small>回答数</small></div>
+        <div><span id="dialogAccuracy">—</span><small>正答率</small></div>
+        <div><span id="dialogWrong">0</span><small>復習待ち</small></div>
+      </div>
+      <button class="danger-button" id="clearProgressButton" type="button">記録をリセット</button>
+    </dialog>
+
+    <footer>個人学習用｜問題・解説画像は提供素材を使用</footer>
+  </body>
+</html>

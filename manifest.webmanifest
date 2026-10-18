@@ -1,0 +1,10 @@
+{
+  "name": "昆虫検定トレーナー",
+  "short_name": "昆虫検定",
+  "description": "昆虫検定 初級102問の問題演習アプリ",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f0e5",
+  "theme_color": "#173d31",
+  "icons": []
+}
