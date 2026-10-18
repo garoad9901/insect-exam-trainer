@@ -18,8 +18,11 @@ const ui = {
   clearProgressButton: document.getElementById('clearProgressButton'),
   quitButton: document.getElementById('quitButton'),
   questionNumber: document.getElementById('questionNumber'),
+  questionText: document.getElementById('questionText'),
+  questionFigure: document.getElementById('questionFigure'),
   questionImage: document.getElementById('questionImage'),
   answerImage: document.getElementById('answerImage'),
+  answerText: document.getElementById('answerText'),
   choiceGrid: document.getElementById('choiceGrid'),
   answerPanel: document.getElementById('answerPanel'),
   answerResult: document.getElementById('answerResult'),
@@ -81,6 +84,14 @@ function shuffle(items) {
   return result;
 }
 
+function renderRuby(text) {
+  return text.replace(/([一-龯々]+)（([ぁ-ゖー]+)）/g, '<ruby>$1<rt>$2</rt></ruby>');
+}
+
+function plainText(text) {
+  return text.replace(/（[ぁ-ゖー]+）/g, '');
+}
+
 function selectedValue(name) {
   return document.querySelector(`input[name="${name}"]:checked`).value;
 }
@@ -111,15 +122,25 @@ function renderQuestion() {
   const question = session.questions[session.index];
   const position = session.index + 1;
   ui.questionNumber.textContent = `初級 第${question.id}問`;
-  ui.questionImage.src = question.questionImage;
-  ui.questionImage.alt = `初級 第${question.id}問の問題画像`;
+  ui.questionText.innerHTML = renderRuby(question.prompt);
+  if (question.questionFigure) {
+    ui.questionFigure.hidden = false;
+    ui.questionImage.src = question.questionFigure;
+    ui.questionImage.alt = `初級 第${question.id}問の写真・イラスト`;
+  } else {
+    ui.questionFigure.hidden = true;
+    ui.questionImage.src = '';
+    ui.questionImage.alt = '';
+  }
   ui.answerImage.src = '';
   ui.answerImage.alt = '';
   ui.answerPanel.hidden = true;
   ui.progressText.textContent = `${position} / ${session.questions.length}`;
   ui.scoreText.textContent = `正解 ${session.correct}`;
   ui.progressBar.style.width = `${((position - 1) / session.questions.length) * 100}%`;
-  ui.choiceGrid.querySelectorAll('button').forEach((button) => {
+  ui.choiceGrid.querySelectorAll('button').forEach((button, index) => {
+    button.querySelector('span').innerHTML = renderRuby(question.choices[index]);
+    button.setAttribute('aria-label', `${index + 1}、${plainText(question.choices[index])}`);
     button.disabled = false;
     button.classList.remove('correct', 'wrong', 'muted');
   });
@@ -155,11 +176,14 @@ function answerQuestion(choice) {
   });
 
   ui.answerResult.className = `answer-result ${isCorrect ? 'success' : 'failure'}`;
+  const correctChoice = question.choices[question.answer - 1];
+  const selectedChoice = question.choices[choice - 1];
   ui.answerResult.innerHTML = isCorrect
-    ? `<strong>正解です</strong><span>答えは ${question.answer} 番</span>`
-    : `<strong>おしい！</strong><span>正解は ${question.answer} 番</span>`;
-  ui.answerImage.src = question.answerImage;
-  ui.answerImage.alt = `初級 第${question.id}問の写真・イラストつき解説`;
+    ? `<strong>正解です</strong><span>${renderRuby(correctChoice)}</span>`
+    : `<strong>おしい！</strong><span>選んだ答え：${renderRuby(selectedChoice)}</span>`;
+  ui.answerText.innerHTML = `<strong>${question.answer}</strong><span>${renderRuby(correctChoice)}</span>`;
+  ui.answerImage.src = question.answerFigure;
+  ui.answerImage.alt = `初級 第${question.id}問の解答ページにある写真・イラスト`;
   ui.nextButton.textContent = session.index === session.questions.length - 1 ? '結果を見る' : '次の問題へ';
   ui.answerPanel.hidden = false;
   ui.scoreText.textContent = `正解 ${session.correct}`;

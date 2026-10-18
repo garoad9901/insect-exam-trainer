@@ -1,4 +1,4 @@
-const CACHE = 'insect-exam-trainer-v1';
+const CACHE = 'insect-exam-trainer-v2';
 const CORE = ['./', './index.html', './styles.css', './data.js', './app.js', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
